@@ -6,13 +6,33 @@ import { useEffect } from "react";
 
 export function useOnPlayerShoot() {
   useEffect(() => {
-    function handler(event: KeyboardEvent) {
-      if (event.key === " ") {
+    const pressedKeys = new Set<string>();
+    let animation: number;
+
+    function handleKeyDown(e: KeyboardEvent) {
+      pressedKeys.add(e.key);
+      console.log("KEYS", pressedKeys);
+    }
+
+    function handleKeyUp(e: KeyboardEvent) {
+      pressedKeys.delete(e.key);
+    }
+    function updateShot() {
+      if (pressedKeys.has(" ")) {
         console.log("SHOOTING");
       }
+      animation = requestAnimationFrame(updateShot);
     }
-    window.addEventListener("keydown", handler);
 
-    return () => window.removeEventListener("keydown", handler);
+    animation = requestAnimationFrame(updateShot);
+
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyUp);
+      window.removeEventListener("keyup", handleKeyUp);
+      cancelAnimationFrame(animation);
+    };
   }, []);
 }
