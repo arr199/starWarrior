@@ -12,17 +12,14 @@ function App() {
   });
 
   useOnPlayerMove(setPlayerPosition, player, gameContainer);
-  useOnPlayerShoot();
+  useOnPlayerShoot(player, gameContainer, playerPosition);
 
   return (
     <div className="min-h-[100vh] flex flex-col items-center">
       <Header></Header>
       <main className="flex flex-col w-full h-full items-center">
         {/* GAME CONTAINER */}
-        <section
-          ref={gameContainer}
-          className="relative mt-4 border-2 border-white w-[500px] aspect-[3/4] "
-        >
+        <section ref={gameContainer} className="relative mt-4 border-2 border-white w-[500px] aspect-[3/4]  bg-black">
           {/* PLAYER */}
           <div
             ref={player}

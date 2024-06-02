@@ -1,24 +1,26 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
+import { createProjectile } from "../logic/createProjectile";
 
-// GET PLAYER CURRENT POSITION
-// MAKE AN ELEMENT APPEAR ON TOP OF THE PLAYER
-// MAKE THIS ELEMENT MOVE AND BE DESTROY IN A FEW SECONDS
-
-export function useOnPlayerShoot() {
+export function useOnPlayerShoot(
+  player: React.RefObject<HTMLDivElement>,
+  gameContainer: React.RefObject<HTMLDivElement>,
+  playerPosition: { bottom: number; left: number }
+) {
   useEffect(() => {
     const pressedKeys = new Set<string>();
     let animation: number;
 
     function handleKeyDown(e: KeyboardEvent) {
       pressedKeys.add(e.key);
-      console.log("KEYS", pressedKeys);
     }
 
     function handleKeyUp(e: KeyboardEvent) {
       pressedKeys.delete(e.key);
     }
+
     function updateShot() {
       if (pressedKeys.has(" ")) {
+        createProjectile(player, gameContainer, playerPosition);
         console.log("SHOOTING");
       }
       animation = requestAnimationFrame(updateShot);
@@ -30,9 +32,9 @@ export function useOnPlayerShoot() {
     window.addEventListener("keyup", handleKeyUp);
 
     return () => {
-      window.removeEventListener("keydown", handleKeyUp);
-      window.removeEventListener("keyup", handleKeyUp);
+      window.removeEventListener("keydown", handleKeyDown);
+      // window.removeEventListener("keyup", handleKeyUp);
       cancelAnimationFrame(animation);
     };
-  }, []);
+  }, [player, gameContainer, playerPosition]);
 }
